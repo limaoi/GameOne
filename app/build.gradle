@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "com.example.limaoi.gameone"
+        minSdkVersion 21
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.google.com' }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:design:25.3.1'
+    testCompile 'junit:junit:4.12'
+    compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.3'
+    compile 'com.github.GrenderG:Toasty:1.1'
+    /*compile 'com.android.support:support-v4:25.3.1'*/
+
+    compile 'cn.bmob.android:http-legacy:1.0'
+    //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务
+    compile 'cn.bmob.android:bmob-sdk:3.5.5'
+    compile 'cn.bmob.android:bmob-sms:1.0.1'
+
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
+    //动态授权
+    apt 'com.zhy:mpermission-compiler:1.0.0'
+    compile 'com.zhy:mpermission-api:1.0.0'
+
+    //选择器
+    compile('com.github.gzu-liyujiang.AndroidPicker:WheelPicker:1.5.1') {
+        exclude group: 'com.android.support'
+    }
+    compile 'com.alibaba:fastjson:1.1.55.android'
+
+    //glide图片加载库
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+}

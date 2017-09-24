@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBc">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/radio_group">
+
+        <RelativeLayout
+            android:id="@+id/fragment_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_home"
+            style="@style/RadioButton_Style"
+            android:checked="true"
+            android:drawableTop="@drawable/rbutton_bg_home_selector"
+            android:text="@string/it_home"
+            android:textColor="@drawable/rbutton_bg_textcolor_selector"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/rb_video"
+            style="@style/RadioButton_Style"
+            android:drawableTop="@drawable/rbutton_bg_video_selector"
+            android:text="@string/it_video"
+            android:textColor="@drawable/rbutton_bg_textcolor_selector"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/rb_circle"
+            style="@style/RadioButton_Style"
+            android:drawableTop="@drawable/rbutton_bg_circle_selector"
+            android:text="@string/it_circle"
+            android:textColor="@drawable/rbutton_bg_textcolor_selector"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/rb_me"
+            style="@style/RadioButton_Style"
+            android:drawableTop="@drawable/rbutton_bg_my_selector"
+            android:text="@string/it_me"
+            android:textColor="@drawable/rbutton_bg_textcolor_selector"
+            android:textSize="8dp"
+            android:textStyle="bold" />
+
+    </RadioGroup>
+
+
+</RelativeLayout>
