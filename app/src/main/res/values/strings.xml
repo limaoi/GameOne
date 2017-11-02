@@ -47,10 +47,16 @@
     <string name="tv_agreement">注册代表您已同意GameOne用户协议</string>
 
     <string name="bt_logout">退出登录</string>
+    <string name="bt_clear_cache">清除缓存</string>
     <string name="tv_nickname">昵称</string>
     <string name="tv_sex">性别</string>
     <string name="tv_signature">个人签名：</string>
     <string name="tv_signature2">个人签名</string>
     <string name="tv_email">邮箱</string>
     <string name="tv_phone">手机</string>
+    <string name="tv_circle">圈子</string>
+    <string name="tv_cancle">取消</string>
+    <string name="tv_issue">发送</string>
+    <string name="error_gif">error_gif</string>
+    <string name="et_hint3">分享新鲜事..</string>
 </resources>

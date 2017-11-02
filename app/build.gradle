@@ -59,4 +59,13 @@ dependencies {
 
     //glide图片加载库
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    //图片选择器
+    compile 'com.yanzhenjie:album:2.0.0-alpha'
+
+    //下拉加载和加载更多
+    compile 'cn.finalteam.loadingviewfinal:loading-more-view:1.0.1'
+    compile 'cn.finalteam.loadingviewfinal:ultra-pull-to-refresh:1.0.1'
+
+    compile 'com.jaeger.ninegridimageview:library:1.0.2'
 }

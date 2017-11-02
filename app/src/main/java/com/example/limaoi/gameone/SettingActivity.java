@@ -9,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 
 /**
@@ -19,6 +20,7 @@ import cn.bmob.v3.BmobUser;
 public class SettingActivity extends BaseActivity implements OnClickListener {
 
     private Button mLogout;
+    private Button mClearCache;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
     private void initViews() {
         mLogout = (Button) findViewById(R.id.bt_logout);
+        mClearCache = (Button) findViewById(R.id.bt_clear_cache);
     }
 
     private void initEvents() {
@@ -50,6 +53,10 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了
                 Intent intent2 = new Intent(this, LoginActivity.class);
                 startActivity(intent2);
+                finish();
+                break;
+            case R.id.bt_clear_cache:
+                BmobQuery.clearAllCachedResults();
                 finish();
                 break;
         }

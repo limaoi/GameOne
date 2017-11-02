@@ -32,7 +32,7 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
 
     @Override
     public InfoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_info_item, parent, false);
         InfoAdapter.ViewHolder holder = new InfoAdapter.ViewHolder(view);
         return holder;
     }
@@ -48,6 +48,7 @@ public class InfoAdapter extends RecyclerView.Adapter<InfoAdapter.ViewHolder> {
     public int getItemCount() {
         return mData == null ? 0 : mData.size();
     }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 

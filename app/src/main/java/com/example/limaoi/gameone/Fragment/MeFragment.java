@@ -405,7 +405,6 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                         return;
                     }
                     String cropImagePath = getRealFilePathFromUri(getApplicationContext(), uri);
-                    Bitmap bitMap = BitmapFactory.decodeFile(cropImagePath);
                     //此处后面可以将bitMap转为二进制上传后台网络
                     final BmobFile pic = new BmobFile(new File(cropImagePath));
                     pic.upload(new UploadFileListener() {

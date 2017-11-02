@@ -6,6 +6,19 @@
 
 
     <Button
+        android:id="@+id/bt_clear_cache"
+        android:layout_width="250dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/shape_fill_button"
+        android:text="@string/bt_clear_cache"
+        android:textColor="@color/colorWhite"
+        android:textSize="18sp" />
+
+    <Button
         android:id="@+id/bt_logout"
         android:layout_width="250dp"
         android:layout_height="40dp"
