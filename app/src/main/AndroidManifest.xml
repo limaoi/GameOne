@@ -65,8 +65,11 @@
 
         <activity
             android:name=".EditMsgActivity"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".AddVideoActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".EditActivity.NickNameEditActivity"

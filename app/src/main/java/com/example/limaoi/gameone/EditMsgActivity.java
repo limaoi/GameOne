@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -15,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.limaoi.gameone.Fragment.MeFragment;
 import com.example.limaoi.gameone.adapter.PictureAdapter;
 import com.example.limaoi.gameone.bean.Circle;
 import com.example.limaoi.gameone.bean.Person;
@@ -58,7 +59,6 @@ public class EditMsgActivity extends BaseActivity implements View.OnClickListene
     private ArrayList<AlbumFile> mAlbumFiles = null;
     private List<String> dynamicPictureUrl = null;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +100,31 @@ public class EditMsgActivity extends BaseActivity implements View.OnClickListene
             }
         });
         mRecyclerView.setAdapter(mPictureAdapter);
+        et_dynamic.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mAlbumFiles == null) {
+                    if (s.length() != 0) {
+                        tv_issue.setVisibility(View.VISIBLE);
+                    } else {
+                        tv_issue.setVisibility(View.GONE);
+                    }
+                } else {
+                    tv_issue.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
     }
 
     @Override
@@ -139,8 +164,8 @@ public class EditMsgActivity extends BaseActivity implements View.OnClickListene
                                         if (urls.size() == filePaths.length) {//如果数量相等，则代表文件全部上传完成
                                             dynamicPictureUrl = urls;
                                             Toasty.success(EditMsgActivity.this, "上传成功", Toast.LENGTH_SHORT, true).show();
-                                            tv_issue.setClickable(true);
-                                            tv_issue.setTextColor(getResources().getColor(R.color.colorBlack));
+                                            /*tv_issue.setTextColor(getResources().getColor(R.color.colorBlack));*/
+                                            tv_issue.setVisibility(View.VISIBLE);
                                         }
                                     }
 
@@ -150,8 +175,7 @@ public class EditMsgActivity extends BaseActivity implements View.OnClickListene
                                         //2、curPercent--表示当前上传文件的进度值（百分比）
                                         //3、total--表示总的上传文件数
                                         //4、totalPercent--表示总的上传进度（百分比）
-                                        tv_issue.setClickable(false);
-                                        tv_issue.setTextColor(getResources().getColor(R.color.colorOther));
+                                        tv_issue.setVisibility(View.GONE);
                                     }
 
                                     @Override
@@ -159,10 +183,8 @@ public class EditMsgActivity extends BaseActivity implements View.OnClickListene
                                         if (!isNetworkConnected(EditMsgActivity.this)) {
                                             Toasty.error(EditMsgActivity.this, "网络不可用", Toast.LENGTH_SHORT, true).show();
                                         }
-                                        Toast.makeText(EditMsgActivity.this, "错误码" + statuscode + ",错误描述：" + errormsg, Toast.LENGTH_SHORT).show();
                                     }
                                 });
-
                             }
 
                             @Override
@@ -176,35 +198,37 @@ public class EditMsgActivity extends BaseActivity implements View.OnClickListene
                 String dynamic = et_dynamic.getText().toString();
                 if (!dynamic.isEmpty() || mAlbumFiles != null) {
                     final Circle circle = new Circle();
-                    BmobUser bmobUser = BmobUser.getCurrentUser();
-                    if (bmobUser != null) {
-                        String username = (String) BmobUser.getObjectByKey("username");
-                        String nickname = (String) BmobUser.getObjectByKey("nickname");
-                        circle.setUsername(username);
-                        circle.setNickname(nickname);
-                    }
                     if (!dynamic.isEmpty()) {
                         circle.setDynamic(dynamic);
                     }
                     if (mAlbumFiles != null) {
                         circle.setDynamicPictureUrl(dynamicPictureUrl);
                     }
-                    circle.save(new SaveListener<String>() {
-                        @Override
-                        public void done(String s, BmobException e) {
-                            if (e == null) {
-
-                            } else {
-                                if (isNetworkConnected(EditMsgActivity.this)) {
-                                    Log.i("bmob", "error" + e);
-                                    Toasty.error(EditMsgActivity.this, "发布失败", Toast.LENGTH_SHORT, true).show();
-                                } else {
-                                    Toasty.error(EditMsgActivity.this, "网络不可用", Toast.LENGTH_SHORT, true).show();
+                    BmobUser bmobUser = BmobUser.getCurrentUser();
+                    if (bmobUser != null) {
+                        String objectId = (String) BmobUser.getObjectByKey("objectId");
+                        String nickname = (String) BmobUser.getObjectByKey("nickname");
+                        String picurl = (String) BmobUser.getObjectByKey("pic");
+                        circle.setUserId(objectId);
+                        circle.setNickname(nickname);
+                        circle.setLikeCount(0);
+                        circle.setCommentCount(0);
+                        circle.setHeadPictureUrl(picurl);
+                        circle.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                if (e != null) {
+                                    if (isNetworkConnected(EditMsgActivity.this)) {
+                                        Log.i("bmob", "error" + e);
+                                        Toasty.error(EditMsgActivity.this, "发布失败", Toast.LENGTH_SHORT, true).show();
+                                    } else {
+                                        Toasty.error(EditMsgActivity.this, "网络不可用", Toast.LENGTH_SHORT, true).show();
+                                    }
                                 }
                             }
-                        }
-                    });
-                    finish();
+                        });
+                        finish();
+                    }
                 }
                 if (dynamic.isEmpty() && mAlbumFiles == null) {
                     Toasty.error(EditMsgActivity.this, "请说点什么吧", Toast.LENGTH_SHORT, true).show();

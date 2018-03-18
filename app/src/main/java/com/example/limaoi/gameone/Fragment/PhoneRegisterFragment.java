@@ -61,6 +61,8 @@ public class PhoneRegisterFragment extends Fragment implements View.OnClickListe
     private TextView tv_hintPwd;
     private TimeCount time;
 
+    private static final String headPictureUrl = "http://bmob-cdn-13327.b0.upaiyun.com/2018/01/08/f8f99045cc8c42a8aff2a60f99c6b30f.png";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -267,6 +269,7 @@ public class PhoneRegisterFragment extends Fragment implements View.OnClickListe
                             person.setSignature("这个人很懒什么都没有留下");
                             person.setAddress("未填写");
                             person.setSex("未填写");
+                            person.setPic(headPictureUrl);
                             person.signUp(new SaveListener<Object>() {
                                 @Override
                                 public void done(Object o, BmobException e) {

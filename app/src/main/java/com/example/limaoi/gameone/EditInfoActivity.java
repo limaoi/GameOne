@@ -92,7 +92,6 @@ public class EditInfoActivity extends BaseActivity implements OnClickListener {
     private ImageView iv_verify_email;
     private ImageView iv_verify_phone;
 
-    private String photoUrl;
 
     //请求相机
     private static final int REQUEST_CAPTURE = 100;
@@ -118,6 +117,7 @@ public class EditInfoActivity extends BaseActivity implements OnClickListener {
             String address = (String) BmobUser.getObjectByKey("address");
             String email = (String) BmobUser.getObjectByKey("email");
             String mobilePhoneNumber = (String) BmobUser.getObjectByKey("mobilePhoneNumber");
+            String picurl = (String) BmobUser.getObjectByKey("pic");
             Boolean emailVerified = (Boolean) BmobUser.getObjectByKey("emailVerified");
             Boolean mobilePhoneNumberVerified = (Boolean) BmobUser.getObjectByKey("mobilePhoneNumberVerified");
             tv_nickname_value.setText(nickname);
@@ -125,22 +125,8 @@ public class EditInfoActivity extends BaseActivity implements OnClickListener {
             tv_sex_value.setText(sex);
             tv_address_value.setText(address);
             tv_email_value.setText(email);
-            if (bmobUser != null) {
-                String objectId = (String) BmobUser.getObjectByKey("objectId");
-                BmobQuery<Person> query = new BmobQuery<Person>();
-                query.getObject(objectId, new QueryListener<Person>() {
-                    @Override
-                    public void done(Person person, BmobException e) {
-                        if (e == null) {
-                            photoUrl = person.getPic().getFileUrl();
-                            new getImageCacheAsyncTask(EditInfoActivity.this).execute(photoUrl);
-                        }else {
-                            circleImageView_head_photo.setImageResource(R.drawable.ic_account_gray);
-                        }
-                    }
-                });
-            }
-            Glide.with(getApplicationContext()).load(photoUrl).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_account_gray).error(R.drawable.ic_account_gray).into(circleImageView_head_photo);
+            new getImageCacheAsyncTask(EditInfoActivity.this).execute(picurl);
+            Glide.with(getApplicationContext()).load(picurl).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_account_gray).error(R.drawable.ic_account_gray).into(circleImageView_head_photo);
             if (email == null) {
                 tv_email_value.setText("未填写");
             } else {
@@ -471,33 +457,11 @@ public class EditInfoActivity extends BaseActivity implements OnClickListener {
                             if (e == null) {
                                 BmobUser bmobUser = BmobUser.getCurrentUser();
                                 Person person = new Person();
-                                person.setPic(pic);
+                                person.setPic(pic.getFileUrl());
                                 person.update(bmobUser.getObjectId(), new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
-                                        if (e == null) {
-                                            BmobUser bmobUser = new BmobUser();
-                                            if (bmobUser != null) {
-                                                String objectId = (String) BmobUser.getObjectByKey("objectId");
-                                                BmobQuery<Person> query = new BmobQuery<Person>();
-                                                query.getObject(objectId, new QueryListener<Person>() {
-                                                    @Override
-                                                    public void done(Person person, BmobException e) {
-                                                        if (e == null) {
-                                                            photoUrl = person.getPic().getFileUrl();
-                                                            new getImageCacheAsyncTask(getApplicationContext()).execute(photoUrl);
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        } else {
-                                            if (isNetworkConnected(EditInfoActivity.this)) {
-                                                Log.i("bmob", "error" + e);
-                                                Toasty.error(EditInfoActivity.this, "上传失败", Toast.LENGTH_SHORT, true).show();
-                                            } else {
-                                                Toasty.error(EditInfoActivity.this, "网络不可用", Toast.LENGTH_SHORT, true).show();
-                                            }
-                                        }
+                                        new getImageCacheAsyncTask(getApplicationContext()).execute(pic.getFileUrl());
                                     }
                                 });
                             } else {

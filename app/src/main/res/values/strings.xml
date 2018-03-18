@@ -56,7 +56,10 @@
     <string name="tv_phone">手机</string>
     <string name="tv_circle">圈子</string>
     <string name="tv_cancle">取消</string>
-    <string name="tv_issue">发送</string>
+    <string name="tv_issue">提交</string>
     <string name="error_gif">error_gif</string>
     <string name="et_hint3">分享新鲜事..</string>
+    <string name="et_hint4">请输入视频标题..</string>
+    <string name="menu_preview">Gallery</string>
+    <string name="menu_video_select">Video</string>
 </resources>

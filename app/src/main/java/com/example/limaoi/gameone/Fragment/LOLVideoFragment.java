@@ -1,25 +1,20 @@
 package com.example.limaoi.gameone.Fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.limaoi.gameone.EditMsgActivity;
+import com.example.limaoi.gameone.AddVideoActivity;
 import com.example.limaoi.gameone.R;
-import com.example.limaoi.gameone.adapter.CircleAdapter;
-import com.example.limaoi.gameone.bean.Circle;
+import com.example.limaoi.gameone.adapter.VideoItemAdapter;
+import com.example.limaoi.gameone.bean.Video;
 import com.example.limaoi.gameone.utils.TimeUtil;
-
-import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,70 +23,75 @@ import java.util.List;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.UpdateListener;
 import cn.finalteam.loadingviewfinal.OnDefaultRefreshListener;
 import cn.finalteam.loadingviewfinal.OnLoadMoreListener;
 import cn.finalteam.loadingviewfinal.PtrClassicFrameLayout;
 import cn.finalteam.loadingviewfinal.PtrFrameLayout;
 import cn.finalteam.loadingviewfinal.RecyclerViewFinal;
+import cn.jzvd.JZVideoPlayerStandard;
 import es.dmoral.toasty.Toasty;
 
-import static cn.bmob.v3.Bmob.getApplicationContext;
-
 /**
- * Created by limaoi on 2017/6/18.
+ * Created by limaoi on 2017/12/11.
  * E-mail：autismlm20@vip.qq.com
  */
 
-public class CircleFragment extends BaseFragment implements View.OnClickListener {
+public class LOLVideoFragment extends BaseFragment implements View.OnClickListener {
 
-    private FloatingActionButton mFloatingActionButton;
+    public static String TABLAYOUT_FRAGMENT = "LOLVideoFragment";
+    private FloatingActionButton addVideoBtn;
     private PtrClassicFrameLayout mPtrLayout;
+    private ArrayList<Video> videoList = new ArrayList<>();
     private RecyclerViewFinal mRecyclerViewFinal;
-    private ArrayList<Circle> circleList = new ArrayList<>();
-    private CircleAdapter mCircleAdapter;
+    private VideoItemAdapter mVideoItemAdapter;
+    private JZVideoPlayerStandard jzVideoPlayer;
     private int mPage = 1;
+
+    public static LOLVideoFragment newInstance(int type) {
+        LOLVideoFragment fragment = new LOLVideoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(TABLAYOUT_FRAGMENT, type);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        BmobUser bmobUser = BmobUser.getCurrentUser();
-        if (bmobUser != null) {
-            mFloatingActionButton.setVisibility(View.VISIBLE);
-        } else {
-            mFloatingActionButton.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_circle, container, false);
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_lol_video, container, false);
 
         //初始化Bmob
         Bmob.initialize(getActivity(), "a21a5524eff971e709218fdd5420bec2");
 
-        MIUISetStatusBarLightMode(getActivity().getWindow(), true);
-
         initViews(view);
 
-        initEvens();
+        initEvents();
 
         return view;
     }
 
-    private void initViews(View view) {
-        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab_add);
-        mPtrLayout = (PtrClassicFrameLayout) view.findViewById(R.id.ptr_rv_layout);
-        mRecyclerViewFinal = (RecyclerViewFinal) view.findViewById(R.id.rv_games);
+    @Override
+    public void onPause() {
+        super.onPause();
+        jzVideoPlayer.releaseAllVideos();
     }
 
-    private void initEvens() {
-        mFloatingActionButton.setOnClickListener(this);
+    private void initViews(View view) {
+        addVideoBtn = (FloatingActionButton) view.findViewById(R.id.fab_add);
+        mPtrLayout = (PtrClassicFrameLayout) view.findViewById(R.id.ptr_rv_layout);
+        mRecyclerViewFinal = (RecyclerViewFinal) view.findViewById(R.id.rv_RecyclerView);
+        jzVideoPlayer = (JZVideoPlayerStandard)view.findViewById(R.id.videoplayer);
+    }
+
+    private void initEvents() {
+        addVideoBtn.setOnClickListener(this);
         if (isNetworkConnected(getActivity())) {
             loadingData();
             mPtrLayout.autoRefresh();
@@ -102,55 +102,15 @@ public class CircleFragment extends BaseFragment implements View.OnClickListener
 
         LinearLayoutManager LinearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerViewFinal.setLayoutManager(LinearLayoutManager);
-        mCircleAdapter = new CircleAdapter(circleList);
-        mRecyclerViewFinal.setAdapter(mCircleAdapter);
-        mCircleAdapter.setOnItemClickListener(new CircleAdapter.OnItemClickListener() {
+        mVideoItemAdapter = new VideoItemAdapter(videoList);
+        mRecyclerViewFinal.setAdapter(mVideoItemAdapter);
+        mVideoItemAdapter.setOnItemClickListener(new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 
             }
         });
         setSwipeRefreshInfo();
-    }
-
-    private void loadingData() {
-        circleList.clear();
-        BmobQuery<Circle> query = new BmobQuery<Circle>();
-        query.setLimit(5);
-        query.order("-createdAt");
-        query.findObjects(new FindListener<Circle>() {
-            @Override
-            public void done(List<Circle> list, BmobException e) {
-                if (e == null) {
-                    String time = null;
-                    SimpleDateFormat formatter = new SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm:ss");
-                    if (list.size() < 5) {
-                        mRecyclerViewFinal.setHasLoadMore(false);
-                        for (int i = 0; i < list.size(); i++) {
-                            try {
-                                time = TimeUtil.getTimeFormatText(formatter.parse(list.get(i).getCreatedAt()));
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
-                            }
-                            Circle circle = new Circle(list.get(i).getObjectId(), list.get(i).getHeadPictureUrl(), list.get(i).getNickname(), list.get(i).getDynamic(), list.get(i).getDynamicPictureUrl(), time, list.get(i).getLikeCount(), list.get(i).getCommentCount());
-                            circleList.add(circle);
-                        }
-                    } else {
-                        mRecyclerViewFinal.setHasLoadMore(true);
-                        for (int i = 0; i < list.size(); i++) {
-                            try {
-                                time = TimeUtil.getTimeFormatText(formatter.parse(list.get(i).getCreatedAt()));
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
-                            }
-                            Circle circle = new Circle(list.get(i).getObjectId(), list.get(i).getHeadPictureUrl(), list.get(i).getNickname(), list.get(i).getDynamic(), list.get(i).getDynamicPictureUrl(), time, list.get(i).getLikeCount(), list.get(i).getCommentCount());
-                            circleList.add(circle);
-                        }
-                    }
-                }
-            }
-        });
     }
 
     private void setSwipeRefreshInfo() {
@@ -169,22 +129,63 @@ public class CircleFragment extends BaseFragment implements View.OnClickListener
                 requestData(mPage + 1);
             }
         });
-        /*mRecyclerViewFinal.showFailUI();*/
+    }
+
+    private void loadingData() {
+        videoList.clear();
+        BmobQuery<Video> query = new BmobQuery<Video>();
+        query.setLimit(5);
+        query.addWhereEqualTo("label", "英雄联盟");
+        query.order("-createdAt");
+        query.findObjects(new FindListener<Video>() {
+            @Override
+            public void done(List<Video> list, BmobException e) {
+                if (e == null) {
+                    String time = null;
+                    SimpleDateFormat formatter = new SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss");
+                    if (list.size() < 5) {
+                        mRecyclerViewFinal.setHasLoadMore(false);
+                        for (int i = 0; i < list.size(); i++) {
+                            try {
+                                time = TimeUtil.getTimeFormatText(formatter.parse(list.get(i).getCreatedAt()));
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            Video video = new Video(list.get(i).getTitle(), list.get(i).getVideoUrl(), list.get(i).getVideoPicUrl(), list.get(i).getNickname(), list.get(i).getHeadPictureUrl(), 0, 0);
+                            videoList.add(video);
+                        }
+                    } else {
+                        mRecyclerViewFinal.setHasLoadMore(true);
+                        for (int i = 0; i < list.size(); i++) {
+                            try {
+                                time = TimeUtil.getTimeFormatText(formatter.parse(list.get(i).getCreatedAt()));
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+                            Video video = new Video(list.get(i).getTitle(), list.get(i).getVideoUrl(), list.get(i).getVideoPicUrl(), list.get(i).getNickname(), list.get(i).getHeadPictureUrl(), 0, 0);
+                            videoList.add(video);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void requestData(int page) {
-        if (page == 1) { //page == 1表示下拉下拉
+        if (page == 1) {
             loadingData();
             mPage = 1;
             mPtrLayout.onRefreshComplete();//完成下拉刷新
         } else {
-            BmobQuery<Circle> query = new BmobQuery<Circle>();
+            BmobQuery<Video> query = new BmobQuery<Video>();
             query.setLimit(5);
             query.setSkip(5 * mPage);
+            query.addWhereEqualTo("label", "英雄联盟");
             query.order("-createdAt");
-            query.findObjects(new FindListener<Circle>() {
+            query.findObjects(new FindListener<Video>() {
                 @Override
-                public void done(List<Circle> list, BmobException e) {
+                public void done(List<Video> list, BmobException e) {
                     if (e == null) {
                         String time = null;
                         SimpleDateFormat formatter = new SimpleDateFormat(
@@ -197,8 +198,8 @@ public class CircleFragment extends BaseFragment implements View.OnClickListener
                                 } catch (ParseException e1) {
                                     e1.printStackTrace();
                                 }
-                                Circle circle = new Circle(list.get(i).getObjectId(), list.get(i).getHeadPictureUrl(), list.get(i).getNickname(), list.get(i).getDynamic(), list.get(i).getDynamicPictureUrl(), time, list.get(i).getLikeCount(), list.get(i).getCommentCount());
-                                circleList.add(circle);
+                                Video video = new Video(list.get(i).getTitle(), list.get(i).getVideoUrl(), list.get(i).getVideoPicUrl(), list.get(i).getNickname(), list.get(i).getHeadPictureUrl(), 0, 0);
+                                videoList.add(video);
                             }
                         } else {
                             mRecyclerViewFinal.setHasLoadMore(true);
@@ -208,8 +209,8 @@ public class CircleFragment extends BaseFragment implements View.OnClickListener
                                 } catch (ParseException e1) {
                                     e1.printStackTrace();
                                 }
-                                Circle circle = new Circle(list.get(i).getObjectId(), list.get(i).getHeadPictureUrl(), list.get(i).getNickname(), list.get(i).getDynamic(), list.get(i).getDynamicPictureUrl(), time, list.get(i).getLikeCount(), list.get(i).getCommentCount());
-                                circleList.add(circle);
+                                Video video = new Video(list.get(i).getTitle(), list.get(i).getVideoUrl(), list.get(i).getVideoPicUrl(), list.get(i).getNickname(), list.get(i).getHeadPictureUrl(), 0, 0);
+                                videoList.add(video);
                             }
                         }
                     }
@@ -218,24 +219,17 @@ public class CircleFragment extends BaseFragment implements View.OnClickListener
             mPage++;
             mRecyclerViewFinal.onLoadMoreComplete();//完成加载更多
         }
-        mCircleAdapter.notifyDataSetChanged();
+
+        mVideoItemAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_add:
-                BmobUser bmobUser = BmobUser.getCurrentUser();
-                if (bmobUser != null) {
-                    String picurl = (String) BmobUser.getObjectByKey("pic");
-                    if (picurl == null) {
-                        Toasty.error(getActivity(), "请先上传头像再进行操作", Toast.LENGTH_SHORT, true).show();
-                    } else {
-                        Intent intent = new Intent(getActivity(), EditMsgActivity.class);
-                        startActivity(intent);
-                        break;
-                    }
-                }
+                Intent intent = new Intent(getActivity(), AddVideoActivity.class);
+                startActivity(intent);
+                break;
         }
     }
 }

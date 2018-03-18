@@ -12,21 +12,46 @@ import cn.bmob.v3.BmobObject;
 
 public class Circle extends BmobObject {
 
-    private String username;
+    private String objectCircleId;
+    private String userId;
     private String nickname;
     private String dynamic; //动态
     private List<String> dynamicPictureUrl;
     private String changeTime;
+    private String headPictureUrl;
+    private Integer likeCount;
+    private Integer commentCount;
+
 
     public Circle() {
 
     }
 
-    public Circle(String nickname, String dynamic, List<String> dynamicPictureUrl, String changeTime) {
+    public Circle(String objectCircleId, String headPictureUrl, String nickname, String dynamic, List<String> dynamicPictureUrl, String changeTime, Integer likeCount, Integer commentCount) {
+        this.objectCircleId = objectCircleId;
+        this.headPictureUrl = headPictureUrl;
         this.nickname = nickname;
         this.dynamic = dynamic;
         this.dynamicPictureUrl = dynamicPictureUrl;
         this.changeTime = changeTime;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+    }
+
+    public void setObjectCircleId(String objectCircleId) {
+        this.objectCircleId = objectCircleId;
+    }
+
+    public void setLikeCount(Integer likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public void setCommentCount(Integer commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public void setHeadPictureUrl(String headPictureUrl) {
+        this.headPictureUrl = headPictureUrl;
     }
 
     public void setChangeTime(String changeTime) {
@@ -37,8 +62,8 @@ public class Circle extends BmobObject {
         this.dynamicPictureUrl = dynamicPictureUrl;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void setNickname(String nickname) {
@@ -49,8 +74,8 @@ public class Circle extends BmobObject {
         this.dynamic = dynamic;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserId() {
+        return userId;
     }
 
     public String getNickname() {
@@ -67,5 +92,21 @@ public class Circle extends BmobObject {
 
     public String getChangeTime() {
         return changeTime;
+    }
+
+    public String getHeadPictureUrl() {
+        return headPictureUrl;
+    }
+
+    public Integer getLikeCount() {
+        return likeCount;
+    }
+
+    public Integer getCommentCount() {
+        return commentCount;
+    }
+
+    public String getObjectCircleId() {
+        return objectCircleId;
     }
 }

@@ -14,14 +14,14 @@ public class Person extends BmobUser {
     private String signature;
     private String sex;
     private String address;
-    private BmobFile pic;
+    private String pic;
 
 
-    public void setPic(BmobFile pic) {
+    public void setPic(String pic) {
         this.pic = pic;
     }
 
-    public BmobFile getPic() {
+    public String getPic() {
         return pic;
     }
 

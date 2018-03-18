@@ -35,8 +35,7 @@
                 android:layout_marginBottom="10dp"
                 android:text="@string/tv_issue"
                 android:textColor="@drawable/textview_color_selector2"
-                android:textSize="15dp"
-                android:visibility="gone" />
+                android:textSize="15dp" />
 
         </RelativeLayout>
 
@@ -55,20 +54,48 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/et_dynamic"
+            android:id="@+id/et_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
             android:gravity="start"
-            android:hint="@string/et_hint3"
+            android:hint="@string/et_hint4"
             android:lines="5"
+            android:maxLength="40"
             android:padding="10dp"
             android:textColorHint="@color/colorOther"
             android:textCursorDrawable="@null"
             android:textSize="15dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="添加缩列图"
+            android:textColor="@color/colorOther" />
+
         <Button
-            android:id="@+id/bt_add_picture"
+            android:id="@+id/bt_add_videoPic"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/ic_add_picture" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="添加视频"
+            android:textColor="@color/colorOther" />
+
+        <Button
+            android:id="@+id/bt_add_video"
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_marginLeft="6dp"

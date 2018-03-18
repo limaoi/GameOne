@@ -53,6 +53,8 @@ import com.example.limaoi.gameone.SettingActivity;
 import com.example.limaoi.gameone.adapter.MeAdapter;
 import com.example.limaoi.gameone.bean.Person;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +97,6 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     private ImageView iv_more;
     private CircleImageView circleImageView_user;
     private CircleImageView circleImageView_blank;
-    private String photoUrl;
 
     public static final String[] tabTitle = new String[]{"个人资料", "动态", "收藏"};
 
@@ -111,6 +112,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     private static final int WRITE_EXTERNAL_STORAGE_REQUEST_CODE = 104;
     //调用照相机返回图片文件
     private File tempFile;
+
 
 
     @Override
@@ -148,25 +150,16 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             tv_username.setText(nickname);
             tv_signature.setText(signature);
             tv_title.setText(nickname);
-            String objectId = (String) BmobUser.getObjectByKey("objectId");
-            BmobQuery<Person> query = new BmobQuery<Person>();
-            query.getObject(objectId, new QueryListener<Person>() {
-                @Override
-                public void done(Person person, BmobException e) {
-                    if (e == null) {
-                        photoUrl = person.getPic().getFileUrl();
-                        new getImageCacheAsyncTask(getActivity()).execute(photoUrl);
-                    } else {
-                        circleImageView_user.setImageResource(R.drawable.ic_account);
+            String picurl = (String) BmobUser.getObjectByKey("pic");
+            if (picurl != null) {
+                new getImageCacheAsyncTask(getActivity()).execute(picurl);
+                Glide.with(getApplicationContext()).load(picurl).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_account).error(R.drawable.ic_account).into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        circleImageView_user.setImageDrawable(resource);
                     }
-                }
-            });
-            Glide.with(getApplicationContext()).load(photoUrl).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_account).error(R.drawable.ic_account).into(new SimpleTarget<GlideDrawable>() {
-                @Override
-                public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                    circleImageView_user.setImageDrawable(resource);
-                }
-            });
+                });
+            }
         } else {
             circleImageView_user.setVisibility(View.GONE);
             circleImageView_blank.setVisibility(View.VISIBLE);
@@ -411,35 +404,14 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                         @Override
                         public void done(BmobException e) {
                             if (e == null) {
+
                                 BmobUser bmobUser = BmobUser.getCurrentUser();
                                 Person person = new Person();
-                                person.setPic(pic);
+                                person.setPic(pic.getFileUrl());
                                 person.update(bmobUser.getObjectId(), new UpdateListener() {
                                     @Override
                                     public void done(BmobException e) {
-                                        if (e == null) {
-                                            BmobUser bmobUser = BmobUser.getCurrentUser();
-                                            if (bmobUser != null) {
-                                                String objectId = (String) BmobUser.getObjectByKey("objectId");
-                                                BmobQuery<Person> query = new BmobQuery<Person>();
-                                                query.getObject(objectId, new QueryListener<Person>() {
-                                                    @Override
-                                                    public void done(Person person, BmobException e) {
-                                                        if (e == null) {
-                                                            photoUrl = person.getPic().getFileUrl();
-                                                            new getImageCacheAsyncTask(getApplicationContext()).execute(photoUrl);
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        } else {
-                                            if (isNetworkConnected(getActivity())) {
-                                                Log.i("bmob", "error" + e);
-                                                Toasty.error(getActivity(), "上传失败", Toast.LENGTH_SHORT, true).show();
-                                            } else {
-                                                Toasty.error(getActivity(), "网络不可用", Toast.LENGTH_SHORT, true).show();
-                                            }
-                                        }
+                                        new getImageCacheAsyncTask(getApplicationContext()).execute(pic.getFileUrl());
                                     }
                                 });
                             } else {

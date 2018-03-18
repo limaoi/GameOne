@@ -8,12 +8,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
+
+import com.example.limaoi.gameone.bean.Person;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.QueryListener;
+import es.dmoral.toasty.Toasty;
 
 
 /**

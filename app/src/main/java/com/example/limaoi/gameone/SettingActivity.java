@@ -43,6 +43,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
     private void initEvents() {
         mLogout.setOnClickListener(this);
+        mClearCache.setOnClickListener(this);
     }
 
     @Override
