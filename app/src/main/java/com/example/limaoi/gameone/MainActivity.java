@@ -1,16 +1,11 @@
 package com.example.limaoi.gameone;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -23,9 +18,6 @@ import com.example.limaoi.gameone.Fragment.HomeFragment;
 import com.example.limaoi.gameone.Fragment.MeFragment;
 import com.example.limaoi.gameone.Fragment.VideoFragment;
 import com.example.limaoi.gameone.adapter.TabPageAdapter;
-import com.zhy.m.permission.MPermissions;
-import com.zhy.m.permission.PermissionDenied;
-import com.zhy.m.permission.PermissionGrant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +28,7 @@ import java.util.List;
  * E-mail：autismlm20@vip.qq.com
  */
 
-public class MainActivity extends BaseActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends BaseCheckPermissionsActivity implements ViewPager.OnPageChangeListener {
 
     private boolean isExit;
     private ViewPager mViewPager;
@@ -56,9 +48,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
             isExit = false;
         }
     };
-
-    private static final int READ_PHONE_STATE = 2;
-    private static final int ACCESS_FINE_LOCATION = 3;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +85,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
     }
 
     private void initEvents() {
-        MPermissions.requestPermissions(MainActivity.this, READ_PHONE_STATE, Manifest.permission.READ_PHONE_STATE);
         mViewPager.setAdapter(mTabPageAdapter);
         mViewPager.addOnPageChangeListener(this);
         mTabPageAdapter.updateData(mFragments);
@@ -155,24 +143,6 @@ public class MainActivity extends BaseActivity implements ViewPager.OnPageChange
                 break;
         }
         mViewPager.setCurrentItem(position, false);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        MPermissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
-    @PermissionGrant(READ_PHONE_STATE)
-    public void requestSdcardSuccess() {
-        MPermissions.requestPermissions(MainActivity.this, ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
-    @PermissionDenied(READ_PHONE_STATE)
-    public void requestSdcardFailed() {
-        Toast.makeText(this, "拒绝授权，如需请自行授权!", Toast.LENGTH_SHORT).show();
     }
 
 

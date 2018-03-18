@@ -47,11 +47,9 @@ import com.example.limaoi.gameone.utils.AddressPickTask;
 
 import java.io.File;
 
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import cn.qqtheme.framework.entity.City;
@@ -126,7 +124,7 @@ public class EditInfoActivity extends BaseActivity implements OnClickListener {
             tv_address_value.setText(address);
             tv_email_value.setText(email);
             new getImageCacheAsyncTask(EditInfoActivity.this).execute(picurl);
-            Glide.with(getApplicationContext()).load(picurl).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_account_gray).error(R.drawable.ic_account_gray).into(circleImageView_head_photo);
+            Glide.with(getApplicationContext()).load(picurl).into(circleImageView_head_photo);
             if (email == null) {
                 tv_email_value.setText("未填写");
             } else {

@@ -40,10 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.example.limaoi.gameone.BuildConfig;
 import com.example.limaoi.gameone.ClipImageActivity;
@@ -53,18 +49,15 @@ import com.example.limaoi.gameone.SettingActivity;
 import com.example.limaoi.gameone.adapter.MeAdapter;
 import com.example.limaoi.gameone.bean.Person;
 
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -114,7 +107,6 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     private File tempFile;
 
 
-
     @Override
     public void onStart() {
 
@@ -153,12 +145,7 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             String picurl = (String) BmobUser.getObjectByKey("pic");
             if (picurl != null) {
                 new getImageCacheAsyncTask(getActivity()).execute(picurl);
-                Glide.with(getApplicationContext()).load(picurl).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.ic_account).error(R.drawable.ic_account).into(new SimpleTarget<GlideDrawable>() {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        circleImageView_user.setImageDrawable(resource);
-                    }
-                });
+                Glide.with(getApplicationContext()).load(picurl).into(circleImageView_user);
             }
         } else {
             circleImageView_user.setVisibility(View.GONE);

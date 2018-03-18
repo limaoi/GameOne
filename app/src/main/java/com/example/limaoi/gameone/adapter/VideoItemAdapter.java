@@ -71,7 +71,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         holder.jzVideoPlayer.setUp(video.getVideoUrl(), JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL, video.getTitle());
         Glide.with(getApplicationContext()).load(Uri.parse(video.getVideoPicUrl())).into(holder.jzVideoPlayer.thumbImageView);
         Log.i("tag", "video.getHeadPictureUrl()：" + video.getHeadPictureUrl());
-        Glide.with(getApplicationContext()).load(video.getHeadPictureUrl()).placeholder(R.drawable.ic_account_gray).error(R.drawable.ic_account_gray).into(holder.circleImageView_head_photo);
+        Glide.with(getApplicationContext()).load(video.getHeadPictureUrl()).into(holder.circleImageView_head_photo);
         holder.btn_like.setText(video.getLikeCount() + "");
         holder.btn_comment.setText(video.getCommentCount() + "");
     }

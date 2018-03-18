@@ -77,7 +77,7 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.ViewHolder
         holder.tv_dynamic.setText(circle.getDynamic());
         holder.mDynamicPicture.setImagesData(circle.getDynamicPictureUrl());
         holder.tv_time.setText(circle.getChangeTime());
-        Glide.with(getApplicationContext()).load(circle.getHeadPictureUrl()).placeholder(R.drawable.ic_account_gray).error(R.drawable.ic_account_gray).into(holder.circleImageView_head_photo);
+        Glide.with(getApplicationContext()).load(circle.getHeadPictureUrl()).into(holder.circleImageView_head_photo);
         holder.btn_like.setText(circle.getLikeCount() + "");
         holder.btn_like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +123,7 @@ public class CircleAdapter extends RecyclerView.Adapter<CircleAdapter.ViewHolder
         private NineGridImageViewAdapter<String> mAdapter = new NineGridImageViewAdapter<String>() {
             @Override
             protected void onDisplayImage(Context context, ImageView imageView, String s) {
-                Glide.with(context).load(s).placeholder(R.drawable.ic_pic_gray).into(imageView);
+                Glide.with(context).load(s).into(imageView);
             }
 
             @Override
